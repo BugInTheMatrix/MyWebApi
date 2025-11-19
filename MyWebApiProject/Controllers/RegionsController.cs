@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyWebApiProject.CustomValidationFilter;
 using MyWebApiProject.Data;
 using MyWebApiProject.Models.Domain;
 using MyWebApiProject.Models.DTO;
@@ -66,6 +67,10 @@ namespace MyWebApiProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             //var regionDomian = new Region
             //{
             //    Code = addRegionRequestDto.Code,
@@ -87,6 +92,7 @@ namespace MyWebApiProject.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             //var regionDomain=new Region
@@ -95,6 +101,10 @@ namespace MyWebApiProject.Controllers
             //    Name = updateRegionRequestDto.Name,
             //    RegionImageUrl = updateRegionRequestDto.RegionImageUrl
             //};
+            //if (!ModelState.IsValid) 
+            //{
+            //    return BadRequest(ModelState);
+            //}
             var regionDomain = automapper.Map<Region>(updateRegionRequestDto);
             var rehionDOmain = await sQLRegionRepository.UpdateAsync(id, regionDomain);
             if (rehionDOmain == null)
