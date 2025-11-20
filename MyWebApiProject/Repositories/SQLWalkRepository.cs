@@ -31,7 +31,9 @@ namespace MyWebApiProject.Repositories
             return esistingwalk;
         }
 
-        public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null)
+        public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
+            string? sortBy = null, bool isAscending = true,
+            int pageNumber=1,int pageSize=100)
         {
             var walks= nZWalksDbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
             if(!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
@@ -41,6 +43,21 @@ namespace MyWebApiProject.Repositories
                     walks = walks.Where(x => x.Name.Contains(filterQuery));
                 }
             }
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks=isAscending?walks.OrderBy(x=>x.Name): walks.OrderByDescending(x=>x.Name);
+
+                }
+                if (sortBy.Equals("Length", StringComparison.OrdinalIgnoreCase) || sortBy.Equals("LengthInKm", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = isAscending ? walks.OrderBy(x => x.LengthInKm) : walks.OrderByDescending(x => x.LengthInKm);
+
+                }
+            }
+            var skipResults = (pageNumber - 1) * pageSize;
+            walks = walks.Skip(skipResults).Take(pageSize);
             return await walks.ToListAsync();
             //return await nZWalksDbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
         }
