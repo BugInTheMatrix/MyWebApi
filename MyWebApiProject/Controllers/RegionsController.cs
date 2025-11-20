@@ -8,6 +8,7 @@ using MyWebApiProject.Data;
 using MyWebApiProject.Models.Domain;
 using MyWebApiProject.Models.DTO;
 using MyWebApiProject.Repositories;
+using System.Text.Json;
 
 namespace MyWebApiProject.Controllers
 {
@@ -17,16 +18,19 @@ namespace MyWebApiProject.Controllers
     {
         private readonly IRegionRepository sQLRegionRepository;
         private readonly IMapper automapper;
-        public RegionsController(IRegionRepository sQLRegionRepository,IMapper mapper)
+        private readonly ILogger<RegionsController> logger;
+        public RegionsController(IRegionRepository sQLRegionRepository,IMapper mapper,ILogger<RegionsController> logger)
         {
             this.sQLRegionRepository = sQLRegionRepository;
             this.automapper = mapper;
+            this.logger = logger;
         }
-        //GET
+        ////GET
         [HttpGet]
-        [Authorize(Roles = "Reader,Writer")]
+        //[Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll()
         {
+            logger.LogInformation("GetAll Method in RegionsController started");
             var regions = await sQLRegionRepository.GetAllAsync();
             //var regionDtos = new List<RegionDto>();
             //foreach(var region in regions)
@@ -40,6 +44,7 @@ namespace MyWebApiProject.Controllers
 
             //    });
             //}
+            logger.LogInformation($"GetAll Method in RegionsController ended{JsonSerializer.Serialize(regions)}");
             var regionDtos = automapper.Map<List<RegionDto>>(regions);
             return Ok(regionDtos);
         }

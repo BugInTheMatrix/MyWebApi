@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyWebApiProject.Models.Domain;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MyWebApiProject.Data
 {
@@ -15,6 +14,7 @@ namespace MyWebApiProject.Data
         public DbSet<Region> Regions { get; set; }
 
         public DbSet<Walk> Walks { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
