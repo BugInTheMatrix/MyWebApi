@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NZWalks.UI.Models;
 using NZWalks.UI.Models.DTO;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,14 +17,31 @@ namespace NZWalks.UI.Controllers
             this.httpClientFactory = httpClientFactory;
         }
 
+        // Sends the JWT saved at login so the API's [Authorize] checks pass
+        private HttpClient CreateApiClient()
+        {
+            var client = httpClientFactory.CreateClient();
+            var token = Request.Cookies[AuthController.TokenCookie];
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            return client;
+        }
+
 
         public async Task<IActionResult> Index()
         {
             var regions = new List<RegionDto>();
             try
             {
-                var client = httpClientFactory.CreateClient();
+                var client = CreateApiClient();
                 var httpresponse = await client.GetAsync("http://localhost:5144/api/Regions");
+                if (httpresponse.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    // Token missing or expired (API tokens last 15 minutes)
+                    return RedirectToAction("Login", "Auth");
+                }
                 httpresponse.EnsureSuccessStatusCode();
                 regions.AddRange(await httpresponse.Content.ReadFromJsonAsync<IEnumerable<RegionDto>>());
             }
@@ -42,7 +61,7 @@ namespace NZWalks.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddRegionViewModel model)
         {
-            var client = httpClientFactory.CreateClient();
+            var client = CreateApiClient();
             var httpRequestMessage = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
@@ -50,6 +69,15 @@ namespace NZWalks.UI.Controllers
                 Content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json")
             };
             var httpResponseMessage =  await client.SendAsync(httpRequestMessage);
+            if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+            {
+                ModelState.AddModelError(string.Empty, "Your account needs the Writer role to add regions.");
+                return View(model);
+            }
             httpResponseMessage.EnsureSuccessStatusCode();
             var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
             if (response != null)
@@ -61,7 +89,7 @@ namespace NZWalks.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var client = httpClientFactory.CreateClient();
+            var client = CreateApiClient();
 
             var response = await client.GetFromJsonAsync<RegionDto>($"http://localhost:5144/api/Regions/{id.ToString()}");
 
@@ -77,7 +105,7 @@ namespace NZWalks.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(RegionDto request)
         {
-            var client = httpClientFactory.CreateClient();
+            var client = CreateApiClient();
 
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -103,7 +131,7 @@ namespace NZWalks.UI.Controllers
         {
             try
             {
-                var client = httpClientFactory.CreateClient();
+                var client = CreateApiClient();
 
                 var httpResponseMessage = await client.DeleteAsync($"http://localhost:5144/api/Regions/{request.Id}");
 
