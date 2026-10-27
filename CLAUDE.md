@@ -45,3 +45,5 @@ dotnet ef database update --project MyWebApiProject --context NzWalksAuthDbConte
 - **Errors**: `Middlewares/ExecptionHandlerMiddleware.cs` (note spelling) catches unhandled exceptions, logs them with a GUID, and returns a generic 500 JSON body.
 - **Logging**: Serilog to console and `Logs/NzWalks_log.txt` (configured in `Program.cs`, replaces default providers).
 - **Image uploads**: `LocalImageRepository` writes files to `<ContentRoot>/Images`, saves an `Image` row with a public URL, and `Program.cs` serves that folder as static files at `/Images`.
+
+ask me before executing any git command
