@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApiProject.Models.Domain;
@@ -21,6 +22,7 @@ namespace MyWebApiProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddWalkDto addWalkDto)
         {
             var walkDomain = automapper.Map<Walk>(addWalkDto);
@@ -29,6 +31,7 @@ namespace MyWebApiProject.Controllers
             return Ok(automapper.Map<WalkDto>(walkDomain));
         }
         [HttpGet]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool isAscending,
             [FromQuery] int pageNumber=1, [FromQuery] int pageSize=100)
@@ -41,6 +44,7 @@ namespace MyWebApiProject.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var walk = await walkRepository.GetByIdAsync(id);
@@ -53,6 +57,7 @@ namespace MyWebApiProject.Controllers
         }
         [HttpPut]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
             var walkDomain = automapper.Map<Walk>(updateWalkRequestDto);
@@ -67,6 +72,7 @@ namespace MyWebApiProject.Controllers
         }
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var deletedWalk = await walkRepository.Delete(id);

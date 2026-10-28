@@ -94,6 +94,63 @@ namespace MyWebApiProject.Data
             };
 
             modelBuilder.Entity<Region>().HasData(regions);
+
+            // Seed data for Walks
+            var walks = new List<Walk>
+            {
+                new Walk
+                {
+                    Id = Guid.Parse("a1c3e5f7-1b2d-4e6f-8a9b-0c1d2e3f4a51"),
+                    Name = "Mount Eden Summit Walk",
+                    Description = "A short climb to the top of Auckland's highest volcanic cone with panoramic city views.",
+                    LengthInKm = 2.5,
+                    WalkImageUrl = null,
+                    DifficultyId = Guid.Parse("54466f17-02af-48e7-8ed3-5a4a8bfacf6f"),
+                    RegionId = Guid.Parse("f7248fc3-2585-4efb-8d1d-1c555f4087f6")
+                },
+                new Walk
+                {
+                    Id = Guid.Parse("a1c3e5f7-1b2d-4e6f-8a9b-0c1d2e3f4a52"),
+                    Name = "Cape Reinga Coastal Walkway",
+                    Description = "Coastal track past sand dunes and beaches to the northern tip of New Zealand.",
+                    LengthInKm = 16,
+                    WalkImageUrl = null,
+                    DifficultyId = Guid.Parse("ea294873-7a8c-4c0f-bfa7-a2eb492cbf8c"),
+                    RegionId = Guid.Parse("6884f7d7-ad1f-4101-8df3-7a6fa7387d81")
+                },
+                new Walk
+                {
+                    Id = Guid.Parse("a1c3e5f7-1b2d-4e6f-8a9b-0c1d2e3f4a53"),
+                    Name = "Mount Maunganui Base Track",
+                    Description = "Flat loop around the base of Mauao with ocean views and rock pools.",
+                    LengthInKm = 3.4,
+                    WalkImageUrl = null,
+                    DifficultyId = Guid.Parse("54466f17-02af-48e7-8ed3-5a4a8bfacf6f"),
+                    RegionId = Guid.Parse("14ceba71-4b51-4777-9b17-46602cf66153")
+                },
+                new Walk
+                {
+                    Id = Guid.Parse("a1c3e5f7-1b2d-4e6f-8a9b-0c1d2e3f4a54"),
+                    Name = "Mount Victoria Lookout Walk",
+                    Description = "Town belt trails up to the Mount Victoria lookout over Wellington harbour.",
+                    LengthInKm = 4.2,
+                    WalkImageUrl = null,
+                    DifficultyId = Guid.Parse("ea294873-7a8c-4c0f-bfa7-a2eb492cbf8c"),
+                    RegionId = Guid.Parse("cfa06ed2-bf65-4b65-93ed-c9d286ddb0de")
+                },
+                new Walk
+                {
+                    Id = Guid.Parse("a1c3e5f7-1b2d-4e6f-8a9b-0c1d2e3f4a55"),
+                    Name = "Abel Tasman Coast Track",
+                    Description = "Multi-day Great Walk along golden beaches and granite headlands.",
+                    LengthInKm = 60,
+                    WalkImageUrl = null,
+                    DifficultyId = Guid.Parse("f808ddcd-b5e5-4d80-b732-1ca523e48434"),
+                    RegionId = Guid.Parse("906cb139-415a-4bbb-a174-1a1faf9fb1f6")
+                },
+            };
+
+            modelBuilder.Entity<Walk>().HasData(walks);
         }
     }
 }

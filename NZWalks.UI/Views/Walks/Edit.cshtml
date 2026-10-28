@@ -1,0 +1,10 @@
+@model NZWalks.UI.Models.WalkFormViewModel
+
+<h1 class="mt-3">Edit Walk</h1>
+<form method="post" asp-controller="Walks" asp-action="Edit">
+    <partial name="_WalkForm" model="Model" />
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-secondary" asp-controller="Walks" asp-action="Index">Cancel</a>
+    </div>
+</form>

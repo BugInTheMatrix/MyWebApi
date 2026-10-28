@@ -1,0 +1,4 @@
+-add walks in navbar
+-make page walks in ui
+-user with writer and reader can have access to this page
+-create 5 dummy examples of walks and do migration
