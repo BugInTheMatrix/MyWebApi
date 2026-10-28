@@ -1,0 +1,32 @@
+@model NZWalks.UI.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+<h1 class="mt-3">Login</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success mt-3">@successMessage</div>
+}
+
+<form method="post" asp-action="Login" style="max-width: 420px">
+    <div asp-validation-summary="ModelOnly" class="text-danger mt-3"></div>
+    <div class="mt-3">
+        <label class="form-label" asp-for="Username">Email</label>
+        <input type="email" class="form-control" asp-for="Username" />
+        <span class="text-danger" asp-validation-for="Username"></span>
+    </div>
+    <div class="mt-3">
+        <label class="form-label" asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" />
+        <span class="text-danger" asp-validation-for="Password"></span>
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Login</button>
+        <a class="ms-2" asp-action="Register">Create an account</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="~/NZWalks.UI.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        var isLoggedIn = Context.Request.Cookies.ContainsKey(NZWalks.UI.Controllers.AuthController.TokenCookie);
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -22,12 +25,37 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Regions" asp-action="Index">Regions</a>
-                        </li>
+                        @if (isLoggedIn)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Regions" asp-action="Index">Regions</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (isLoggedIn)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-muted">@Context.Request.Cookies[NZWalks.UI.Controllers.AuthController.UserCookie]</span>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-area="" asp-controller="Auth" asp-action="Logout" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
