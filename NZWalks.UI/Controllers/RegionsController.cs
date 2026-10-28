@@ -135,16 +135,29 @@ namespace NZWalks.UI.Controllers
 
                 var httpResponseMessage = await client.DeleteAsync($"http://localhost:5144/api/Regions/{request.Id}");
 
-                httpResponseMessage.EnsureSuccessStatusCode();
-
-                return RedirectToAction("Index", "Regions");
+                if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return RedirectToAction("Login", "Auth");
+                }
+                if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    TempData["ErrorMessage"] = "Your account needs the Writer role to delete regions.";
+                }
+                else if (httpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    TempData["ErrorMessage"] = "That region no longer exists.";
+                }
+                else
+                {
+                    httpResponseMessage.EnsureSuccessStatusCode();
+                }
             }
-            catch (Exception ex)
+            catch (HttpRequestException)
             {
-                // Console
+                TempData["ErrorMessage"] = "Could not delete the region. Is the NZ Walks API running?";
             }
 
-            return View("Edit");
+            return RedirectToAction("Index", "Regions");
         }
     }
 }
